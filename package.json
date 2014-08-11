@@ -1,0 +1,34 @@
+{
+  "name": "cantrip-persistence-mongofire",
+  "version": "0.0.0",
+  "description": "MongoDB persistence layer for Cantrip",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/borlaym/cantrip-persistence-mongofire.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/borlaym/cantrip-persistence-mongofire/issues"
+  },
+  "homepage": "https://github.com/borlaym/cantrip-persistence-mongofire",
+  "devDependencies": {
+    "Cantrip": "git+https://github.com/KriekApps/Cantrip.git#decouple",
+    "load-grunt-tasks": "~0.4.0",
+    "grunt": "~0.4.4",
+    "grunt-nodemon": "~0.2.1",
+    "grunt-contrib-jasmine": "^0.6.3",
+    "request": "^2.34.0",
+    "grunt-jasmine-node": "~0.2.1"
+  },
+  "dependencies": {
+    "lodash": "~2.4.1",
+    "mongo": "~1.4.7",
+    "kue": "~0.8.3",
+    "node-promise": "~0.5.10"
+  }
+}

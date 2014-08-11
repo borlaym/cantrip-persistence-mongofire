@@ -4,30 +4,14 @@ var request = require("request");
 
 Cantrip.options.persistence = mongodb;
 Cantrip.options.port = 3000;
+Cantrip.options.mongodb = {
+	ip: "localhost",
+	port: 27017,
+	database: "fire"
+};
 
 Cantrip.start(function() {
-	var coll = Cantrip.dataStore.data;
-	coll.remove({}, function(err, res) {
-		coll.insert([{
-			path: "/_contents",
-			value: "object"
-		}, {
-			path: "/_contents/foo",
-			value: "array"
-		}], function(err, res) {
-			for (var i = 0; i < 100; i++) {
-				(function(i) {
-					request({
-						method: "POST",
-						url: "http://localhost:3000/foo",
-						json: {
-							index: i
-						}
-					}, function(error, response, body) {
-						console.log(i);
-					});
-				})(i);
-			}
-		});
+	Cantrip.dataStore.get("/_contents/foo/53e8c7c9cccae64f453a7c0c/a", function(err, res) {
+		console.log(res);
 	})
 });

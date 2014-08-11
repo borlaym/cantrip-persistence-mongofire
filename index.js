@@ -3,8 +3,8 @@ _ = require("lodash");
 var mongo = require('mongodb');
 var MongoClient = mongo.MongoClient;
 // var kue = require("kue");
-// var Promise = require("node-promise").Promise;
-// var when = require("node-promise").when;
+var Promise = require("node-promise").Promise;
+var when = require("node-promise").when;
 // var jobs;
 var db;
 
@@ -18,6 +18,33 @@ function findInObject(path, object, callback) {
 		callback(err, null);
 	}
 };
+
+function mergeCollections(obj, originalPath, collectionNames, callback) {
+	var toGet = _.filter(collectionNames, function(coll) {
+		return coll.name.split(".")[1].indexOf(originalPath) === 0;
+	});
+	var promises = [];
+	for (var i = 0; i < toGet.length; i++) {
+		var path = toGet.name;
+		promises.push(function() {
+			var promise = new Promise();
+			db.collection(path, function(err, coll) {
+				coll.find().toArray(function(err, res) {
+					path = path.replace(originalPath, "");
+					if (path[0] === "/") path = substr(1);
+					for (var j = 0; j < path.split("/").length; j++) {
+						
+					}
+					promise.resolve();
+				});
+			});
+			return promise;
+		});
+	}
+	when(promises, function() {
+		callback(null, obj);
+	});
+}
 
 module.exports = {
 	setupPersistence: function(callback) {
@@ -58,11 +85,15 @@ module.exports = {
 					remainingPath = remainingPath.split("/").splice(1).join("/");
 					coll.find({_id: _id}).toArray(function(err, res) {
 						if (res.length > 0) {
-							findInObject(remainingPath, res[0], callback);
+							findInObject(remainingPath, res[0], function(err, obj) {
+								mergeCollections(obj, originalPath, collections, callback);
+							});
 						} else {
 							coll.find({"_special" : true}, function(err, res) {
 								res = res || [{}];
-								findInObject(remainingPath, res[0], callback);
+								findInObject(remainingPath, res[0], function(err, obj) {
+									mergeCollections(obj, originalPath, collections, callback);
+								});
 							});
 						}
 					});
